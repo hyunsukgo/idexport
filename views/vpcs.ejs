@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Id:Export</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+  <style>
+    table {
+      margin: 1rem 1rem 1rem 1rem;
+    }
+
+    th {
+      margin: 1rem 1rem 1rem 1rem;
+      background-color: black;
+      color: white;
+      font-size: bold;
+      border: solid 1px black;
+      text-align: center;
+    }
+
+    td {
+      padding: 1rem 1rem 1rem 1rem;
+      border: solid 1px black;
+    }
+
+    h1,
+    h2,
+    p {
+      margin-left: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>ID:Export</h1>
+  <br>
+  <P>
+    <%= importedAt %> 에 생성된 정보입니다.</P>
+  <br>
+
+  <h2>VPC</h2>
+  <table>
+    <tr>
+      <th>No</th>
+      <th>Name</th>
+      <th>ID</th>
+      <th>CIDR</th>
+    </tr>
+    <% for(var i = 0; i < result.vpc.Vpcs.length; i++){ %>
+      <tr>
+        <td>
+          <%= i+1 %>
+        </td>
+        <td>
+          <%= result.vpc.Vpcs[i].Tags.filter(function(item) { return item.Key === 'Name'}).map(function(item) { return item.Value }) %>
+        </td>
+        <td>
+          <a href="<%= id %>/<%= result.vpc.Vpcs[i].VpcId %>">
+            <%= result.vpc.Vpcs[i].VpcId %>
+          </a>
+        </td>
+        <td>
+          <%= result.vpc.Vpcs[i].CidrBlock %>
+        </td>
+      </tr>
+      <% } %>
+  </table>
+
+  <h2>CloudFront</h2>
+  <table>
+    <tr>
+      <th>No</th>
+      <th>ID</th>
+      <th>Domain</th>
+      <th>Origin</th>
+
+    </tr>
+    <% var x =0; for(var i = 0; i < result.cloudfront.DistributionList.Items.length; i++){ %>
+      <tr>
+        <td>
+          <%= x += 1 %>
+        </td>
+        <td>
+          <%= result.cloudfront.DistributionList.Items[i].Id %>
+        </td>
+        <td>
+          <%= result.cloudfront.DistributionList.Items[i].DomainName %>
+        </td>
+        <td>
+          <% for(var j = 0; j < result.cloudfront.DistributionList.Items[i].Origins.Items.length; j++){ %>
+            <%= result.cloudfront.DistributionList.Items[i].Origins.Items[j].DomainName %>
+              <% } %>
+        </td>
+      </tr>
+      <% } %>
+  </table>
+
+  <h2>S3</h2>
+  <table>
+    <tr>
+      <th>No</th>
+      <th>Name</th>
+      <th>Region</th>
+      <th>Is Public Bucket?</th>
+      <th>Created At</th>
+
+    </tr>
+    <% var x = 0; 
+       result.s3.Buckets.map((row) => { %>
+      <tr>
+        <td>
+          <%= x += 1 %>
+        </td>
+        <td>
+          <%= row.Name %>
+        </td>
+        <td>
+          <%= row.Region %>
+        </td>
+        <td>
+          <%= row.IsPublic ? 'O' : 'X' %>
+        </td>
+        <td>
+          <%= row.CreationDate %>
+        </td>
+      </tr>
+      <% }); %>
+  </table>
+
+  <script type="text/javascript" src="//unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+  </script>
+
+
+</body>
+</html>

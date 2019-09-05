@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Id:Export</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+  <style>
+    table {
+      margin: 1rem 1rem 1rem 1rem;
+    }
+
+    th {
+      margin: 1rem 1rem 1rem 1rem;
+      background-color: black;
+      color: white;
+      font-size: bold;
+      border: solid 1px black;
+      text-align: center;
+    }
+
+    td {
+      padding: 1rem 1rem 1rem 1rem;
+      border: solid 1px black;
+    }
+
+    h1,
+    h2,
+    p {
+      margin-left: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>ID:Export</h1>
+  <br>
+  <P>
+    <%= vpc %> 와 관련한 리소스들을 보여줍니다.
+  </p>
+  <br>
+  <h2>VPCs</h2>
+  <table id="vpc">
+    <tr>
+      <th>No</th>
+      <th>Name</th>
+      <th>ID</th>
+      <th>CIDR</th>
+    </tr>
+    <% var x = 0; for(var i = 0; i < result.vpc.Vpcs.length; i++){ %>
+      <% if( result.vpc.Vpcs[i].VpcId == vpc ){ %>
+        <tr>
+          <td>
+            <%= x += 1 %>
+          </td>
+          <td>
+            <%= result.vpc.Vpcs[i].Tags.filter((item) => { return item.Key === 'Name'}).map(function(item) { return item.Value }) %>
+          </td>
+          <td>
+            <%= result.vpc.Vpcs[i].VpcId %>
+          </td>
+          <td>
+            <%= result.vpc.Vpcs[i].CidrBlock %>
+          </td>
+          <% } } %>
+        </tr>
+  </table>
+
+  <h2>Subnets</h2>
+  <table>
+    <tr>
+      <th>No</th>
+      <th>ID</th>
+      <th>Name</th>
+      <th>IPv4 CIDR</th>
+      <th>PublicIP@Launch.</th>
+      <th>AZ</th>
+    </tr>
+
+    <% var x = 0;
+       result.subnets.Subnets.filter((item) => { return item.VpcId === vpc })
+       .map((row) => { %>
+        <tr>
+          <td>
+            <%= x += 1 %>
+          </td>
+          <td>
+            <%= row.SubnetId ? row.SubnetId : blank %>
+          </td>
+          <td>
+            <%= row.Tags.filter((item) => { return item.Key === 'Name' }).map(function(item) { return item.Value }) %>
+          </td>
+          <td><%= row.CidrBlock %></td>
+          <td><%= row.MapPublicIpOnLaunch ? 'O' : 'X' %></td>
+          <td><%= row.AvailabilityZone %></td>
+        </tr>
+    <% }); %>
+  </table>
+
+  <h2>Route Table</h2>
+  <table>
+    <tr>
+      <th>No</th>
+      <th>Name</th>
+      <th>ID</th>
+    </tr>
+    <% var x =0; for(var i = 0; i < result.routetables.RouteTables.length; i++){ %>
+      <% if(result.routetables.RouteTables[i].VpcId == vpc){ %>
+        <tr>
+          <td>
+            <%= x += 1 %>
+          </td>
+          <td>
+            <%= result.routetables.RouteTables[i].Tags.filter((item) => { return item.Key === 'Name'}).map(function(item) { return item.Value }) %>
+          </td>
+          <td>
+            <%= result.routetables.RouteTables[i].RouteTableId %>
+          </td>
+        </tr>
+        <% } } %>
+  </table>
+
+
+  <h2>EC2 Instances</h2>
+  <table>
+    <tr>
+      <th>No</th>
+      <th>Name</th>
+      <th>ID</th>
+      <th>Type</th>
+      <th>AZ</th>
+      <th>Key Pair</th>
+      <th>Security Group</th>
+      <th>Public(Elastic) IP</th>
+      <th>Private IP</th>
+      <th>EBS Volumes</th>
+      <th>Subnet Id</th>
+    </tr>
+    <% var x = 0; for(var i = 0; i < result.ec2.Reservations.length; i++){ %>
+      <% if(result.ec2.Reservations[i].Instances[0].VpcId == vpc){ %>
+        <tr>
+          <td>
+            <%= x += 1 %>
+          </td>
+          <td>
+            <%= result.ec2.Reservations[i].Instances[0].Tags.filter((item) => { return item.Key === 'Name'}).map(function(item) { return item.Value }) %>
+          </td>
+          <td>
+            <%= result.ec2.Reservations[i].Instances[0].InstanceId %>
+          </td>
+          <td>
+            <%= result.ec2.Reservations[i].Instances[0].InstanceType %>
+          </td>
+          <td>
+            <%= result.ec2.Reservations[i].Instances[0].Placement.AvailabilityZone %>
+          </td>
+          <td>
+            <%= result.ec2.Reservations[i].Instances[0].KeyName %>
+          </td>
+          <td>
+            <% if(result.ec2.Reservations[i].Instances[0].hasOwnProperty('SecurityGroups')){ %>
+              <% for(var j = 0; j < result.ec2.Reservations[i].Instances[0].SecurityGroups.length; j++){ %>
+                <%= result.ec2.Reservations[i].Instances[0].SecurityGroups[j].GroupName %>
+                  <br> (
+                  <%= result.ec2.Reservations[i].Instances[0].SecurityGroups[j].GroupId %>)
+                    <br>
+                    <% }} %>
+          </td>
+          <td>
+            <% if(result.ec2.Reservations[i].Instances[0].PublicIpAddress) %>
+              <%= result.ec2.Reservations[i].Instances[0].PublicIpAddress %>
+          </td>
+          <td>
+            <%= result.ec2.Reservations[i].Instances[0].PrivateIpAddress %>
+          </td>
+          <td>
+            <% if(result.ec2.Reservations[i].Instances[0].hasOwnProperty('BlockDeviceMappings')){ %>
+              <% for(var j = 0; j < result.ec2.Reservations[i].Instances[0].BlockDeviceMappings.length; j++){ %>
+                <%= result.ec2.Reservations[i].Instances[0].BlockDeviceMappings[j].Ebs.VolumeId %>
+                  <br>
+                  <% }} %>
+          </td>
+          <td>
+            <%= result.ec2.Reservations[i].Instances[0].SubnetId %>
+          </td>
+        </tr>
+        <% }} %>
+  </table>
+
+  <h2>NAT Gateway</h2>
+  <table>
+    <tr>
+      <th>No</th>
+      <th>ID</th>
+      <th>Elastic IP</th>
+      <th>Private IP</th>
+      <th>Subnet</th>
+    </tr>
+    <% var x = 0; for(var i = 0; i < result.natgw.NatGateways.length; i++){ %>
+      <% if(result.natgw.NatGateways[i].VpcId == vpc){ %>
+        <tr>
+          <td>
+            <%= x += 1 %>
+          </td>
+          <td>
+            <%= result.natgw.NatGateways[i].NatGatewayId %>
+          </td>
+          <td>
+            <% for(var j = 0; j < result.natgw.NatGateways[i].NatGatewayAddresses.length; j++){ %>
+              <%= result.natgw.NatGateways[i].NatGatewayAddresses[j].PublicIp %>
+          </td>
+          <td>
+            <%= result.natgw.NatGateways[i].NatGatewayAddresses[j].PrivateIp %>
+              <% } %>
+          </td>
+          <td>
+            <%= result.natgw.NatGateways[i].SubnetId %>
+          </td>
+        </tr>
+        <% }} %>
+  </table>
+
+
+  <h2>Security Group</h2>
+  <table>
+    <tr>
+      <th>No</th>
+      <th>Name</th>
+      <th>ID</th>
+      <th>Protocol</th>
+      <th>Port Range</th>
+      <th>Source</th>
+      <th>Description</th>
+    </tr>
+    <% var k= 0; for(var i = 0; i < result.securitygroups.SecurityGroups.length; i++){ %>
+      <% if(result.securitygroups.SecurityGroups[i].VpcId == vpc){ %>
+        <tr>
+          <td>
+            <%= k += 1 %>
+          </td>
+          <td>
+            <%= result.securitygroups.SecurityGroups[i].GroupName %>
+          </td>
+          <td>
+            <%= result.securitygroups.SecurityGroups[i].GroupId %>
+          </td>
+          <td>
+            <% if(result.securitygroups.SecurityGroups[i].hasOwnProperty('IpPermissions')){ %>
+              <% for(var j = 0; j < result.securitygroups.SecurityGroups[i].IpPermissions.length; j++){ %>
+                <%= result.securitygroups.SecurityGroups[i].IpPermissions[j].IpProtocol %>
+                  <br>
+                  <% }} %>
+          </td>
+          <td>
+            <% if(result.securitygroups.SecurityGroups[i].hasOwnProperty('IpPermissions')){ %>
+              <% for(var j = 0; j < result.securitygroups.SecurityGroups[i].IpPermissions.length; j++){ %>
+                <%= result.securitygroups.SecurityGroups[i].IpPermissions[j].FromPort %> -
+                  <%= result.securitygroups.SecurityGroups[i].IpPermissions[j].ToPort %>
+                    <br>
+                    <% }} %>
+          </td>
+          <td>
+            <% if(result.securitygroups.SecurityGroups[i].hasOwnProperty('IpPermissions')){ %>
+              <% for(var j = 0; j < result.securitygroups.SecurityGroups[i].IpPermissions.length; j++){ %>
+                <% if(result.securitygroups.SecurityGroups[i].IpPermissions[j].IpRanges.length ==  0){ %>
+                <% for(let row of result.securitygroups.SecurityGroups[i].IpPermissions[j].UserIdGroupPairs){ %>
+                  <%= row.GroupId %>
+                    (
+                    <%= row.Description %>)<br>
+                      <% }}else{ %>
+                        <% for(var x = 0; x < result.securitygroups.SecurityGroups[i].IpPermissions[j].IpRanges.length; x++){ %>
+                          <%= result.securitygroups.SecurityGroups[i].IpPermissions[j].IpRanges[x].CidrIp %>
+                            (
+                            <%= result.securitygroups.SecurityGroups[i].IpPermissions[j].IpRanges[x].Description %>)
+                              <br>
+                              <% }}}} %>
+          </td>
+          <td>
+            <%= result.securitygroups.SecurityGroups[i].Description %>
+          </td>
+        </tr>
+        <% } } %>
+  </table>
+
+  <h2>Classic Load Balancers</h2>
+  <table>
+    <tr>
+      <th>No</th>
+      <th>Name</th>
+      <th>DNS Name</th>
+      <th>Port</th>
+      <th>AZ</th>
+      <th>Health Check</th>
+    </tr>
+    <% var x = 0; for(var i = 0; i < result.elb.LoadBalancerDescriptions.length; i++){ %>
+      <% if(result.elb.LoadBalancerDescriptions[i].VPCId == vpc){ %>
+        <tr>
+          <td>
+            <%= x += 1 %>
+          </td>
+          <td>
+            <%= result.elb.LoadBalancerDescriptions[i].LoadBalancerName %>
+          </td>
+          <td>
+            <%= result.elb.LoadBalancerDescriptions[i].DNSName %>
+          </td>
+          <td>
+            <% for(var j=0; j<result.elb.LoadBalancerDescriptions[i].ListenerDescriptions.length; j++){ %>
+              <%= result.elb.LoadBalancerDescriptions[i].ListenerDescriptions[j].Listener.LoadBalancerPort %>
+                <% } %>
+          </td>
+          <td>
+            <% for(var k=0; k<result.elb.LoadBalancerDescriptions[i].AvailabilityZones.length; k++){ %>
+              <%= result.elb.LoadBalancerDescriptions[i].AvailabilityZones[k]   %>
+                <br>
+                <% } %>
+          </td>
+          <td>
+            <%= result.elb.LoadBalancerDescriptions[i].HealthCheck.Target %>
+          </td>
+        </tr>
+        <% } }  %>
+  </table>
+
+
+  <h2>Elastic Load Balancer(Application/Network)</h2>
+  <table>
+    <tr>
+      <th>No</th>
+      <th>Name</th>
+      <th>DNS Name</th>
+      <th>Port</th>
+      <th>AZ</th>
+      <th>Health Check</th>
+    </tr>
+    <% var x = 0; for(var i = 0; i < result.elbv2.LoadBalancers.LoadBalancers.length; i++){ %>
+      <% if(result.elbv2.LoadBalancers.LoadBalancers[i].VpcId == vpc){ %>
+        <tr>
+          <td>
+            <%= x += 1 %>
+          </td>
+          <td>
+            <%= result.elbv2.LoadBalancers.LoadBalancers[i].LoadBalancerName %>
+          </td>
+          <td>
+            <%= result.elbv2.LoadBalancers.LoadBalancers[i].DNSName %>
+          </td>
+          <td>
+            <% for(var k = 0; k < result.elbv2.TargetGroups.TargetGroups.length; k++){ %>
+              <% if(result.elbv2.TargetGroups.TargetGroups[k].VpcId == vpc){ %>
+                <%= result.elbv2.TargetGroups.TargetGroups[k].Port %>
+                  <% }} %>
+          </td>
+          <td>
+            <% for(var j = 0; j < result.elbv2.LoadBalancers.LoadBalancers[i].AvailabilityZones.length; j++){ %>
+              <%= result.elbv2.LoadBalancers.LoadBalancers[i].AvailabilityZones[j].ZoneName %>
+                <% } %>
+          </td>
+          <td>
+            <% for(var k = 0; k < result.elbv2.TargetGroups.TargetGroups.length; k++){ %>
+              <% if(result.elbv2.TargetGroups.TargetGroups[k].VpcId == vpc){ %>
+                <%= result.elbv2.TargetGroups.TargetGroups[k].HealthCheckProtocol %> ://
+                  <%= result.elbv2.TargetGroups.TargetGroups[k].HealthCheckPath %> ,
+                    <% }} %>
+          </td>
+        </tr>
+        <% }} %>
+  </table>
+
+  <h2>Auto Scaling</h2>
+  <table>
+    <tr>
+      <th>No</th>
+      <th>Name</th>
+      <th>LaunchConfiguration Name</th>
+      <th>Instance</th>
+      <th>MaxSize</th>
+      <th>MinSize</th>
+      <th>Desired Capacity</th>
+      <th>Termination Policy</th>
+      <th>AZ</th>
+    </tr>
+
+    <% var x = 0, cached = {}; 
+      for(let row of result.autoscale.AutoScalingGroups){
+        var subnetId = row.VPCZoneIdentifier.split(',')[0];
+          if (subnetHash[subnetId] == vpc ) { %>
+      <tr>
+        <td>
+          <%= x += 1 %>
+        </td>
+        <td>
+          <%= row.AutoScalingGroupName %>
+        </td>
+        <td>
+          <%= row.LaunchConfigurationName %>
+        </td>
+        <td>
+          <% for(let instance of row.Instances){ %>
+            <%= instance.InstanceId %>
+              <% } %>
+        </td>
+        <td>
+          <%= row.MaxSize %>
+        </td>
+        <td>
+          <%= row.MinSize %>
+        </td>
+        <td>
+          <%= row.DesiredCapacity %>
+        </td>
+        <td>
+          <% for(let policy of row.TerminationPolicies){ %>
+            <%= policy %>
+              <% }  %>
+        </td>
+        <td>
+          <%= row.AvailabilityZones.join(', ') %>
+        </td>
+      </tr>
+      <% } } %>
+  </table>
+
+  <h2>RDS</h2>
+  <table>
+    <tr>
+      <th>No</th>
+      <th>Name</th>
+      <th>Engine</th>
+      <th>DB Instance Class</th>
+      <th>Multi-AZ</th>
+      <th>Publicly Accessible</th>
+      <th>Endpoint</th>
+    </tr>
+    <% var x =0; for(var i = 0; i < result.rds.DBInstances.length; i++){ %>
+      <% if(result.rds.DBInstances[i].DBSubnetGroup.VpcId == vpc){ %>
+        <tr>
+          <td>
+            <%= x += 1 %>
+          </td>
+          <td>
+            <%= result.rds.DBInstances[i].DBInstanceIdentifier %>
+          </td>
+          <td>
+            <%= result.rds.DBInstances[i].Engine %>
+              <%= result.rds.DBInstances[i].EngineVersion %>
+          </td>
+          <td>
+            <%= result.rds.DBInstances[i].DBInstanceClass%>
+          </td>
+          <td>
+            <%= result.rds.DBInstances[i].MultiAZ%>
+          </td>
+          <td>
+            <%= result.rds.DBInstances[i].PubliclyAccessible%>
+          </td>
+          <td>
+            <%= result.rds.DBInstances[i].Endpoint.Address%>
+          </td>
+        </tr>
+        <% } } %>
+  </table>
+
+  <% if (result.elasticache.CacheClusters.length > 0) { %> 
+  <h2>ElastiCache</h2>
+  <table>
+    <tr>
+      <th>No</th>
+      <th>ReplicationGroupId</th>
+      <th>CacheClusterId</th>
+      <th>Engine</th>
+      <th>CacheNodeType</th>
+      <th>CacheSubnetGroupName</th>
+      <th>Primary Endpoint/NodeGroupId</th>
+      <th>ReadEndPoint/CacheClusterId</th>
+    </tr>
+    <% var x = 0;
+      result.elasticache.CacheClusters.filter((item) => { return vpc === item.CacheSubnetGroup.VpcId })
+      .map((row) => { %>
+      <tr>
+        <td><%= x += 1 %></td>
+        <td><%= row.ReplicationGroupId %></td>
+        <td><%= row.CacheClusterId %></td>
+        <td><%= row.Engine %> / <%= row.EngineVersion %></td>
+        <td><%= row.CacheNodeType%></td>
+        <td><%= row.CacheSubnetGroupName %></td>
+        <% if (row.ConfigurationEndpoint) { %>
+        <td><%= row.ConfigurationEndpoint.Address %></td>
+        <td>-</td>
+        <% } else if (row.ReplNodeGroups[0].PrimaryEndpoint) { %>
+        <td><%= row.ReplNodeGroups[0].PrimaryEndpoint.Address %></td>
+        <td><% let NodeMember = row.ReplNodeGroups[0].NodeGroupMembers.find((item) => { return item.CacheClusterId === row.CacheClusterId }); %>
+            <%= NodeMember.ReadEndpoint.Address + ' / (' + NodeMember.CurrentRole + ')' %>
+        </td>
+        <% } else { %>
+        <td><%= row.ReplNodeGroups[0].NodeGroupId %> (<%= row.ReplNodeGroups[0].Slots %>)</td>
+        <td><%= row.ReplNodeGroups[0].NodeGroupMembers.map(item => item.CacheClusterId).join(', ') %></td>
+        <% } %>
+      </tr>
+      <% }) %>
+  </table>
+  <% } %>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</body>
+</html>
