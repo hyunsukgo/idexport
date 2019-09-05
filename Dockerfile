@@ -1,5 +1,5 @@
 FROM node:8
-MAINTAINER Nara Shin <whatauseless@gmail.com>
+MAINTAINER Hyunseok Jung <hyunseokjung163@gmail.com>
 
 RUN mkdir -p /app
 WORKDIR /app
