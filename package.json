@@ -26,7 +26,8 @@
     "npm": "^6.0.0",
     "syntax-highlighter": "0.0.3",
     "unstream": "^2.0.0",
-    "xlsx": "^0.12.11"
+    "xlsx": "^0.12.11",
+    "vue" : "^2.6.10"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
