@@ -7,6 +7,10 @@
   </head>
   <body>
     <h1>ID:Export</h1>
+    <div class="form-group">
+        <label for="ProjectName">ProjectName</label>
+        <input required type="text" class="form-control" name="projectname" id="projectname" placeholder="ProjectName">
+      </div>
     <form action="process" method="post">
       <div class="form-group">
         <label for="accesskey">Access Key</label>
@@ -22,6 +26,7 @@
         <input type="text" class="form-control" name="region" id="region" placeholder="Region" value="ap-northeast-2">
       </div>
       <button type="submit" class="btn btn-primary"></span>Export it!</button>
+  <button type="reset" class="btn btn-primary"></button></span>reset</button>
     </form>
     사용중인 AWS 리소스들의 볼륨에 따라 수초에서 수분이 소요됩니다.
 </html>
