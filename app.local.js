@@ -36,6 +36,7 @@ app.post('/process', async(req, res) => {
     let redirectUrl = '/' + id
     const table = new TableHandler();
     table.putRow(id, JSON.stringify(output), output.importMetaData.timeStamp);
+    table.putRow(id, JSON.stringify(output), output.importMetaData.timeStamp);
     res.redirect(redirectUrl);
 });
 
@@ -102,7 +103,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('*', function(req, res) {
-    res.send('404 @ 그리고 아무일도 일어나지 않았다.', 404);
+    res.send('404 @ 응그리고 아무일도 일어나지 않았다.', 404);
 })
 
 const port = process.env.PORT || 3000
