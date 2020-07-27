@@ -1,6 +1,4 @@
-[
-    {
-        "name": "idexport",
-        "imageUri": "533616270150.dkr.ecr.ap-northeast-2.amazonaws.com/idexport:latest"
-    }
-]
+[{
+    "name": "idexport",
+    "imageUri": "904523009150.dkr.ecr.ap-northeast-2.amazonaws.com/idexport:latest"
+}]
