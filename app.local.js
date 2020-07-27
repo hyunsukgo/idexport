@@ -105,7 +105,7 @@ app.get('*', function(req, res) {
     res.send('404 @ 응그리고 아무일도 일어나지 않았다.', 404);
 })
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 80
 app.listen(port, () =>
     console.log(`Server is listening on port ${port}.`)
 )
