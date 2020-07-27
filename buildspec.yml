@@ -1,4 +1,12 @@
+version: 0.2
+
 phases:
-    install:
-      runtime-versions:
-        nodejs: 8
+  install:
+    commands:
+      - echo Installing
+      - npm install -g mocha
+  post_build:
+    commands:
+      - docker build -t idexport .
+      - docker tag idexport:latest 904523009150.dkr.ecr.ap-northeast-2.amazonaws.com/idexport:latest
+      - docker push 904523009150.dkr.ecr.ap-northeast-2.amazonaws.com/idexport:latest
