@@ -9,7 +9,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...          
-      - docker build -t idexport:latest .
+      - docker build -t idexport .
       - docker tag idexport:latest 904523009150.dkr.ecr.ap-northeast-2.amazonaws.com/idexport:latest   
   post_build:
     commands:
