@@ -24,7 +24,6 @@ const exportOutput = async(accesskey, secretaccesskey, region) => {
     return result;
 }
 
-
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -33,7 +32,7 @@ app.post('/process', async function(req, res) {
     let data = [req.body.accesskey, req.body.secretaccesskey, req.body.region];
     let hmac = crypto.createHmac('sha256', 'password');
     let id = hmac.update(JSON.stringify(data)).digest('hex');
-    const output = await exportOutput(...data);
+    const output = await getInfo(...data);
     let redirectUrl = '/' + id;
     const table = new TableHandler();
     table.putRow(id, JSON.stringify(output), output.importMetaData.timeStamp);
