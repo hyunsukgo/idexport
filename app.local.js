@@ -1,16 +1,17 @@
 'use strict';
 
-require('babel-polyfill')
+import 'babel-polyfill';
 
-const express = require('express');
-const asyncify = require('express-asyncify');
-const app = asyncify(express()),
-    bodyParser = require('body-parser');
-const Export = require('./Export');
-const crypto = require('crypto');
-const TableHandler = require('./TableHandler');
-const _ = require('lodash');
-const XLSX = require('xlsx')
+import express from 'express';
+import asyncify from 'express-asyncify';
+const app = asyncify(express());
+import { urlencoded } from 'body-parser';
+import Export from './Export';
+import { createHmac } from 'crypto';
+import TableHandler from './TableHandler';
+import _ from 'lodash';
+import XLSX from 'xlsx';
+import { TIMEOUT } from 'dns';
 
 const exportOutput = async(accesskey, secretaccesskey, region) => {
     let result;
@@ -24,18 +25,18 @@ const exportOutput = async(accesskey, secretaccesskey, region) => {
 }
 
 
-app.use(bodyParser.urlencoded({
+app.use(urlencoded({
     extended: true
 }));
 
 app.post('/process', async(req, res) => {
     let data = [req.body.accesskey, req.body.secretaccesskey, req.body.region]
-    let hmac = crypto.createHmac('sha256', 'password')
+    let hmac = createHmac('sha256', 'password')
     let id = hmac.update(JSON.stringify(data)).digest('hex');
     const output = await exportOutput(...data);
     let redirectUrl = '/' + id
     const table = new TableHandler();
-    table.putRow(id, JSON.stringify(output), output.importMetaData.timeStamp);
+    table.putRow(id, JSON.stringify(output), output.importData.timeStamp);
     res.redirect(redirectUrl);
 });
 
