@@ -1,16 +1,16 @@
 'use strict';
 
-import 'babel-polyfill';
+require('babel-polyfill')
 
-import express from 'express';
-import asyncify from 'express-asyncify';
-const app = asyncify(express());
-import { urlencoded } from 'body-parser';
-import Export from './Export';
-import { createHmac } from 'crypto';
-import TableHandler from './TableHandler';
-import _ from 'lodash';
-import XLSX from 'xlsx';
+const express = require('express');
+const asyncify = require('express-asyncify');
+const app = asyncify(express()),
+    bodyParser = require('body-parser');
+const Export = require('./Export');
+const crypto = require('crypto');
+const TableHandler = require('./TableHandler');
+const _ = require('lodash');
+const XLSX = require('xlsx')
 
 const exportOutput = async(accesskey, secretaccesskey, region) => {
     let result;
@@ -24,13 +24,13 @@ const exportOutput = async(accesskey, secretaccesskey, region) => {
 }
 
 
-app.use(urlencoded({
+app.use(bodyParser.urlencoded({
     extended: true
 }));
 
 app.post('/process', async(req, res) => {
     let data = [req.body.accesskey, req.body.secretaccesskey, req.body.region]
-    let hmac = createHmac('sha256', 'password')
+    let hmac = crypto.createHmac('sha256', 'password')
     let id = hmac.update(JSON.stringify(data)).digest('hex');
     const output = await exportOutput(...data);
     let redirectUrl = '/' + id
