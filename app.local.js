@@ -1,17 +1,16 @@
 'use strict';
 
-import 'babel-polyfill';
+require('babel-polyfill')
 
-import express from 'express';
-import asyncify from 'express-asyncify';
-const app = asyncify(express());
-import { urlencoded } from 'body-parser';
-import Export from './Export.js';
-import { createHmac } from 'crypto';
-import TableHandler from './TableHandler.js';
-import _ from 'lodash';
-import XLSX from 'xlsx';
-import { TIMEOUT } from 'dns';
+const express = require('express');
+const asyncify = require('express-asyncify');
+const app = asyncify(express()),
+    bodyParser = require('body-parser');
+const Export = require('./Export');
+const crypto = require('crypto');
+const TableHandler = require('./TableHandler');
+const _ = require('lodash');
+const XLSX = require('xlsx')
 
 const exportOutput = async(accesskey, secretaccesskey, region) => {
     let result;
@@ -24,25 +23,26 @@ const exportOutput = async(accesskey, secretaccesskey, region) => {
     return result;
 }
 
-app.use(urlencoded({
+
+app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-app.post('/process', async function(req, res) {
-    let data = [req.body.accesskey, req.body.secretaccesskey, req.body.region];
-    let hmac = createHmac('sha256', 'password');
+app.post('/process', async(req, res) => {
+    let data = [req.body.accesskey, req.body.secretaccesskey, req.body.region]
+    let hmac = crypto.createHmac('sha256', 'password')
     let id = hmac.update(JSON.stringify(data)).digest('hex');
     const output = await exportOutput(...data);
-    let redirectUrl = '/' + id;
+    let redirectUrl = '/' + id
     const table = new TableHandler();
     table.putRow(id, JSON.stringify(output), output.importMetaData.timeStamp);
     res.redirect(redirectUrl);
 });
 
-app.post('/:id/refresh', async function(req, res) {
+app.post('/:id/refresh', async(req, res) => {
     const output = await exportOutput(...data);
     let id = req.params.id;
-    let redirectUrl = '/' + id;
+    let redirectUrl = '/' + id
     const table = new TableHandler();
     table.putRow(id, JSON.stringify(output), output.importMetaData.timeStamp);
     res.redirect(redirectUrl);
@@ -102,10 +102,10 @@ app.get('/', function(req, res) {
 });
 
 app.get('*', function(req, res) {
-    res.send('404 @ 응그리고 아무일도 일어나지 않았다.', 404);
+    res.send('404 @ 그리고 아무일도 일어나지 않았다.', 404);
 })
 
-const port = process.env.PORT || 80
+const port = process.env.PORT || 3000
 app.listen(port, () =>
     console.log(`Server is listening on port ${port}.`)
 )
