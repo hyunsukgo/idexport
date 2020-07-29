@@ -1,8 +1,8 @@
-require('babel-polyfill')
+import 'babel-polyfill';
 
-const AWS = require('aws-sdk');
-const _ = require('lodash');
-var awsConfig = require('aws-config');
+import { EC2, ELB, ELBv2, AutoScaling, S3, RDS, ElastiCache, CloudFront, route53 as _route53, EFS, config } from 'aws-sdk';
+import _ from 'lodash';
+import awsConfig from 'aws-config';
 
 class Export {
     constructor(accessKey, secretAccessKey, region) {
@@ -20,7 +20,7 @@ class Export {
     async getInfo(err, data) {
         const self = this;
 
-        const ec2 = new AWS.EC2();
+        const ec2 = new EC2();
         this.output.ec2 = await ec2.describeInstances().promise();
         this.output.securitygroups = await ec2.describeSecurityGroups().promise();
         this.output.subnets = await ec2.describeSubnets().promise();
@@ -30,10 +30,10 @@ class Export {
         this.output.natgw = await ec2.describeNatGateways().promise();
         this.output.ebs = await ec2.describeVolumes().promise();
 
-        const elb = new AWS.ELB();
+        const elb = new ELB();
         this.output.elb = this.cleanResponse(await elb.describeLoadBalancers().promise());
 
-        const elbv2 = new AWS.ELBv2();
+        const elbv2 = new ELBv2();
         let outputElbv2 = {};
         outputElbv2.LoadBalancers = this.cleanResponse(await elbv2.describeLoadBalancers().promise());
         outputElbv2.TargetGroups = this.cleanResponse(await elbv2.describeTargetGroups().promise());
@@ -46,11 +46,11 @@ class Export {
 
         this.output.elbv2 = outputElbv2;
 
-        const autoscaling = new AWS.AutoScaling();
+        const autoscaling = new AutoScaling();
         this.output.autoscale = this.cleanResponse(await autoscaling.describeAutoScalingGroups().promise());
         this.output.launchconfig = this.cleanResponse(await autoscaling.describeLaunchConfigurations().promise());
 
-        const s3 = new AWS.S3();
+        const s3 = new S3();
         this.output.s3 = {};
 
         let S3Buckets = [];
@@ -75,10 +75,10 @@ class Export {
         }
         this.output.s3 = { Buckets: S3Buckets };
 
-        const rds = new AWS.RDS();
+        const rds = new RDS();
         this.output.rds = this.cleanResponse(await rds.describeDBInstances().promise());
 
-        const elasticache = new AWS.ElastiCache();
+        const elasticache = new ElastiCache();
         this.output.elasticache = this.cleanResponse(await elasticache.describeCacheClusters().promise());
         let ElastiCacheSubnetGroups = this.cleanResponse(await elasticache.describeCacheSubnetGroups().promise());
         let ElastiCacheReplicationGroups = this.cleanResponse(await elasticache.describeReplicationGroups().promise());
@@ -106,13 +106,13 @@ class Export {
 
         this.output.elasticache.CacheClusters = NewElastiCacheRows;
 
-        const cloudfront = new AWS.CloudFront();
+        const cloudfront = new CloudFront();
         this.output.cloudfront = await cloudfront.listDistributions().promise();
 
-        const route53 = new AWS.route53();
+        const route53 = new _route53();
         this.output.route53 = await route53.Gethostzone().promise();
 
-        const efs = new AWS.EFS();
+        const efs = new EFS();
         this.output.efs = await efs.describeFileSystems().promise();
 
         let date = new Date();
@@ -128,7 +128,7 @@ class Export {
         this.accessKey = accessKey;
         this.secretAccessKey = secretAccessKey;
         this.region = region;
-        AWS.config.update({ accessKeyId: accessKey, secretAccessKey: secretAccessKey, region: region });
+        config.update({ accessKeyId: accessKey, secretAccessKey: secretAccessKey, region: region });
 
         return context.getInfo(accessKey, secretAccessKey, region)
             .then((result) => {
@@ -137,4 +137,4 @@ class Export {
     }
 }
 
-module.exports = Export;
+export default Export;
