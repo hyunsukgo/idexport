@@ -36,7 +36,7 @@ app.post('/process', async(req, res) => {
         const output = await exportOutput(...data);
     } catch (err) {
         console.log(err)
-    }
+    };
     let redirectUrl = '/' + id
     const table = new TableHandler();
     table.putRow(id, JSON.stringify(output));
