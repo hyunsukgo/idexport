@@ -28,15 +28,11 @@ app.use(urlencoded({
     extended: true
 }));
 
-app.post('/process', async(req, res) => {
+app.post('/process', (req, res) => {
     let data = [req.body.accesskey, req.body.secretaccesskey, req.body.region]
     let hmac = createHmac('sha256', 'password')
     let id = hmac.update(JSON.stringify(data)).digest('hex');
-    try {
-        const output = await exportOutput(...data);
-    } catch (err) {
-        console.log(err)
-    };
+    const output = exportOutput(...data);
     let redirectUrl = '/' + id
     const table = new TableHandler();
     table.putRow(id, JSON.stringify(output));
