@@ -1,39 +1,39 @@
 {
-    "name": "exportapp",
-    "version": "0.0.1",
-    "files": [
-        "*.js",
-        "*.ejs"
-    ],
-    "main": "lambda.js",
-    "scripts": {
-        "start": "nodemon app.local.js"
-    },
-    "dependencies": {
-        "aws-config": "^1.1.4",
-        "aws-serverless-express": "^3.2.0",
-        "babel-polyfill": "^6.26.0",
-        "body-parser": "^1.18.2",
-        "cookie-parser": "~1.4.3",
-        "crypto": "^1.0.1",
-        "debug": "~2.6.9",
-        "ejs": "~2.5.7",
-        "ejs-lint": "^0.3.0",
-        "express": "~4.16.0",
-        "express-asyncify": "^1.0.0",
-        "http-errors": "~1.6.2",
-        "morgan": "~1.9.0",
-        "npm": "^6.0.0",
-        "syntax-highlighter": "0.0.3",
-        "unstream": "^2.0.0",
-        "xlsx": "^0.12.11",
-        "vue": "^2.6.10",
-        "bootstrap": "^3.3.1"
-    },
-    "devDependencies": {
-        "babel-cli": "^6.26.0",
-        "babel-preset-env": "^1.6.1",
-        "babel-register": "^6.26.0",
-        "nodemon": "^1.17.3"
-    }
+  "name": "exportapp",
+  "version": "0.0.1",
+  "files": [
+    "*.js",
+    "*.ejs"
+  ],
+  "main": "lambda.js",
+  "scripts": {
+    "start": "nodemon app.local.js"
+  },
+  "dependencies": {
+    "aws-config": "^1.1.4",
+    "aws-serverless-express": "^3.2.0",
+    "babel-polyfill": "^6.26.0",
+    "body-parser": "^1.18.2",
+    "cookie-parser": "~1.4.3",
+    "crypto": "^1.0.1",
+    "debug": "~2.6.9",
+    "ejs": "~2.5.7",
+    "ejs-lint": "^0.3.0",
+    "express": "~4.16.0",
+    "express-asyncify": "^1.0.0",
+    "http-errors": "~1.6.2",
+    "morgan": "~1.9.0",
+    "npm": "^6.0.0",
+    "syntax-highlighter": "0.0.3",
+    "unstream": "^2.0.0",
+    "xlsx": "^0.12.11",
+    "vue" : "^2.6.10",
+    "bootstrap" : "^3.3.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
+    "nodemon": "^1.17.3"
+  }
 }

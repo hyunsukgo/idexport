@@ -1,10 +1,10 @@
-import { config, DynamoDB } from "aws-sdk";
+const AWS = require("aws-sdk");
 
 class TableHandler {
     constructor() {
-        config.update({
-            accessKeyId: 'AKIA5FGOFZR7DBK527OI',
-            secretAccessKey: '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',
+        AWS.config.update({
+            accessKeyId: 'AKIA5FGOFZR7P5RMKCDU',
+            secretAccessKey: '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',
             region: "ap-northeast-2"
         });
     };
@@ -19,7 +19,7 @@ class TableHandler {
         };
 
 
-        let docClient = new DynamoDB.DocumentClient();
+        let docClient = new AWS.DynamoDB.DocumentClient();
         return new Promise((resolve, reject) => {
             docClient.query(params).promise().then((data) => {
                 resolve(data.Count);
@@ -34,7 +34,7 @@ class TableHandler {
                 id: id
             }
         };
-        let docClient = new DynamoDB.DocumentClient();
+        let docClient = new AWS.DynamoDB.DocumentClient();
 
         return new Promise((resolve, reject) => {
             docClient.get(params).promise().then((data) => {
@@ -53,7 +53,7 @@ class TableHandler {
                 "importedAt": importedAt
             }
         };
-        let docClient = new DynamoDB.DocumentClient();
+        let docClient = new AWS.DynamoDB.DocumentClient();
         return docClient.put(params, function(err, data) {
             if (err) {
                 console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
@@ -65,4 +65,4 @@ class TableHandler {
 
 }
 
-export default TableHandler;
+module.exports = TableHandler;
