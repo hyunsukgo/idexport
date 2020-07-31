@@ -12,13 +12,13 @@ const TableHandler = require('./TableHandler');
 const _ = require('lodash');
 const XLSX = require('xlsx')
 
-const exportOutput = async(accesskey, secretaccesskey, region) => {
+function exportOutput(accesskey, secretaccesskey, region) {
     let result;
     try {
         const exporter = new Export();
         result = await exporter.run(accesskey, secretaccesskey, region);
     } catch (err) {
-        console.error(err)
+        console.error(err);
     };
     return result;
 }
@@ -39,10 +39,10 @@ app.post('/process', async(req, res) => {
     res.redirect(redirectUrl);
 });
 
-app.post('/:id/refresh', async(req, res) => {
+app.post('/:id/refresh', function(req, res) {
     const output = await exportOutput(...data);
     let id = req.params.id;
-    let redirectUrl = '/' + id
+    let redirectUrl = '/' + id;
     const table = new TableHandler();
     table.putRow(id, JSON.stringify(output));
     res.redirect(redirectUrl);
