@@ -1,4 +1,5 @@
 FROM node:8
+
 MAINTAINER Hyunseok Jung <hyunseokjung163@gmail.com>
 
 RUN mkdir -p /app
