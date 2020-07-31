@@ -3,8 +3,8 @@ const AWS = require("aws-sdk");
 class TableHandler {
     constructor() {
         AWS.config.update({
-            accessKeyId: 'AKIA5FGOFZR7P5RMKCDU',
-            secretAccessKey: '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',
+            accessKeyId: 'AKIA5FGOFZR7CGPRT7HT',
+            secretAccessKey: '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',
             region: "ap-northeast-2"
         });
     };
