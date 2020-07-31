@@ -109,7 +109,7 @@ class Export {
         const cloudfront = new AWS.CloudFront();
         this.output.cloudfront = await cloudfront.listDistributions().promise();
 
-        const route53 = new AWS.route53();
+        const route53 = new AWS.Route53();
         this.output.route53 = await route53.Gethostzone().promise();
 
         const efs = new AWS.EFS();
