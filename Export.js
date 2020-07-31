@@ -116,6 +116,7 @@ class Export {
         this.output.efs = await efs.describeFileSystems().promise();
 
         let date = new Date();
+        const importMetaData = new AWS.MetadataService();
         this.output.importMetaData = { 'region': this.region, 'timeStamp': new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toJSON() };
 
         return new Promise((resolve, reject) => {
