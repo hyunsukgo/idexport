@@ -1,4 +1,4 @@
-FROM node:8
+FROM node:10
 
 MAINTAINER Hyunseok Jung <hyunseokjung163@gmail.com>
 
