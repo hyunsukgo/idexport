@@ -32,7 +32,7 @@ app.post('/process', async(req, res) => {
     let data = [req.body.accesskey, req.body.secretaccesskey, req.body.region]
     let hmac = crypto.createHmac('sha256', 'password')
     let id = hmac.update(JSON.stringify(data)).digest('hex');
-    const output = new exportOutput(...data);
+    const output = await exportOutput(...data);
     let redirectUrl = '/' + id
     const table = new TableHandler();
     table.putRow(id, JSON.stringify(output));
