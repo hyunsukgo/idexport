@@ -14,8 +14,12 @@ const XLSX = require('xlsx')
 
 const exportOutput = async(accesskey, secretaccesskey, region) => {
     let result;
-    const exporter = new Export();
-    result = await exporter.run(accesskey, secretaccesskey, region);
+    try {
+        const exporter = new Export();
+        result = await exporter.run(accesskey, secretaccesskey, region);
+    } catch (err) {
+        console.error(err)
+    };
     return result;
 }
 
