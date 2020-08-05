@@ -96,40 +96,6 @@
             <% } %>
     </table>
 
-    <h2>Amazon Certification Manager</h2>
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>DomainName</th>
-            <th>Status</th>
-            <th>Type</th>
-        </tr>
-        <% var x =0; for(var i = 0; i < result.acm.describeCertificate.Items[i]; i++){ %>
-            <tr>
-                <td>
-                    <%= x += 1 %>
-                </td>
-                <td>
-                    <%= result.acm.describeCertificate.Items[i].ResourceRecord.Name %>
-                </td>
-                <td>
-                    <%= result.acm.describeCertificate.Items[i].DomainName %>
-                </td>
-                <td>
-                    <%= result.acm.describeCertificate.Items[i].Status %>
-                </td>
-                <td>
-                    <%= result.acm.describeCertificate.Items[i].Type %>
-                </td>
-                <td>
-                    <% for(var j = 0; j < result.acm.describeCertificate.Items[i].Certificate.Items.length; j++){ %>
-                        <%= result.cloudfront.describeCertificate.Items[i].Certificate.Items[j].DomainName %>
-                            <% } %>
-                </td>
-            </tr>
-            <% } %>
-    </table>
-
     <h2>S3</h2>
     <table>
         <tr>
