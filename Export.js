@@ -112,6 +112,9 @@ class Export {
         const efs = new AWS.EFS();
         this.output.efs = await efs.describeFileSystems().promise();
 
+        const acm = new AWS.ACM();
+        this.output.acm = await acm.describeCertificate();
+
         let date = new Date();
         this.output.importMetaData = { 'region': this.region, 'timeStamp': new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toJSON() };
 

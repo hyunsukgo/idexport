@@ -2,7 +2,7 @@
 const util = require('util')
 require('babel-polyfill');
 
-const Export = require('../Export');
+const Export = require('../Export').default;
 
 const exportOutput = async (accesskey, secretaccesskey, region) => {
   let result;
