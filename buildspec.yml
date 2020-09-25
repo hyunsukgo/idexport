@@ -14,5 +14,5 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      - echo Pushing the Docker image...
-      - docker push 904523009150.dkr.ecr.ap-northeast-2.amazonaws.com/idexport
+      - echo Pushing the Docker image..
+      - docker push 904523009150.dkr.ecr.ap-northeast-2.amazonaws.com/idexport`
