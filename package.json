@@ -26,7 +26,7 @@
       "npm": "^6.0.0",
       "syntax-highlighter": "0.0.3",
       "unstream": "^2.0.0",
-      "xlsx": "^0.12.11",
+      "xlsx": "^0.17.0",
       "vue": "^2.6.10",
       "bootstrap": "^3.3.1"
   },
