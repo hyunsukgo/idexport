@@ -1,4 +1,4 @@
-FROM node:8
+FROM node:18.19.1
 MAINTAINER Nara Shin <whatauseless@gmail.com>
 
 RUN mkdir -p /app
